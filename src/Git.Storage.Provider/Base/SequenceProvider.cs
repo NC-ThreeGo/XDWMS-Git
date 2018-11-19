@@ -165,7 +165,8 @@ namespace Git.Storage.Provider.Base
                             value = new TNumProivder().GetSwiftNumByDay(type, SequenceLength);
                         }
 
-                        //value = DateTime.Now.ToString(SequenceRule) + value;
+                        //当使用每日流水时，根据规则输出日期再加上每日流水号
+                        value = DateTime.Now.ToString(SequenceRule) + value;
                     }
                 }
                 return value;
