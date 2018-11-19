@@ -20,7 +20,7 @@ using Git.Framework.ORM;
 
 namespace Git.Storage.Entity.Bad
 {
-	[TableAttribute(DbName = "JooWMS", Name = "BadReportDetail", PrimaryKeyName = "ID", IsInternal = false)]
+	[TableAttribute(DbName = "XDWMS-Git", Name = "BadReportDetail", PrimaryKeyName = "ID", IsInternal = false)]
     public partial class BadReportDetailEntity : BaseEntity
     {
         public BadReportDetailEntity()

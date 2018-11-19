@@ -21,7 +21,7 @@ using Git.Framework.ORM;
 
 namespace Git.Storage.Entity.Base
 {
-	[TableAttribute(DbName = "JooWMS", Name = "TNum", PrimaryKeyName = "ID", IsInternal = false)]
+	[TableAttribute(DbName = "XDWMS-Git", Name = "TNum", PrimaryKeyName = "ID", IsInternal = false)]
 	public partial class TNumEntity:BaseEntity
 	{
 		public TNumEntity()
