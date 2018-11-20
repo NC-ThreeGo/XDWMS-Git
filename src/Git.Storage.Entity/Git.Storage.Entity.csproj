@@ -102,6 +102,7 @@
     <Compile Include="Store\ProductEntity.cs" />
     <Compile Include="Store\StorageEntity.cs" />
     <Compile Include="Store\SupplierEntity.cs" />
+    <Compile Include="WMS\PartEntity.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

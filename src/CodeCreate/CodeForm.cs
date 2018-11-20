@@ -10,6 +10,7 @@ using CodeCreate.Code;
 using System.Data.SqlClient;
 using CommonData.Util.String;
 using CommonData.Model.Core;
+using System.IO;
 
 namespace CodeCreate
 {
@@ -123,6 +124,7 @@ namespace CodeCreate
         private void btnCreate_Click(object sender, EventArgs e)
         {
             string servername = ddlServerName.SelectedItem.ToString();
+            string dbName = ddlDataBaseName.SelectedItem.ToString();
             string tableName = ddlTableNames.SelectedItem.ToString();
             string connection = null;
             SqlConnection con = null;
@@ -159,21 +161,25 @@ namespace CodeCreate
                 SqlDataReader reader = command.ExecuteReader();
                 ddlTableNames.Items.Clear();
                 StringBuilder sbCode = new StringBuilder("");
+
+                PrintAnnotation(ref sbCode);
+                sbCode.Append("\n");
+
                 sbCode.Append("using System;\n");
                 sbCode.Append("using System.Collections.Generic;\n");
                 sbCode.Append("using System.Linq;\n");
                 sbCode.Append("using System.Text;\n");
-                sbCode.Append("using CommonData.Entity;\n");
-                sbCode.Append("using CommonData.Model.Core;\n");
+                sbCode.Append("using System.Data;\n");
+                sbCode.Append("using Git.Framework.ORM;\n");
                 sbCode.Append("\n");
-                sbCode.Append("namespace Entity\n");
+                sbCode.AppendFormat("namespace Git.Storage.Entity.{0}\n", tbModuleName.Text);
                 sbCode.Append("{\n");
 
-                sbCode.AppendFormat("\t[Serializable]\n");
-                sbCode.AppendFormat("\t[TableAttribute(DBName = \"\", Name = \"{0}\", PrimaryKeyName = \"@PrimaryKeyName\", IsInternal = false)]\n", tableName);
-                sbCode.AppendFormat("\tpublic class {0}:BaseEntity\n", tableName.FirstToUpper(tableName));
+                //sbCode.AppendFormat("\t[Serializable]\n");
+                sbCode.AppendFormat("\t[TableAttribute(DbName = \"{0}\", Name = \"{1}\", PrimaryKeyName = \"@PrimaryKeyName\", IsInternal = false)]\n", dbName, tableName);
+                sbCode.AppendFormat("\tpublic partial class {0}Entity:BaseEntity\n", tbClassName.Text);
                 sbCode.Append("\t{\n");
-                sbCode.AppendFormat("\t\tpublic {0}()\n", tableName.FirstToUpper(tableName));
+                sbCode.AppendFormat("\t\tpublic {0}Entity()\n", tbClassName.Text);
                 sbCode.Append("\t\t{\n");
                 sbCode.Append("\t\t}\n\n");
                 string pkName="Id";
@@ -183,20 +189,38 @@ namespace CodeCreate
                     {
                         pkName=reader["ColName"].ToString();
                     }
-                    sbCode.AppendFormat("\t\tprivate {0} {1};\n", GetType(reader["ColTypeName"].ToString()), reader["ColName"].ToString().FirstToLower(reader["ColName"].ToString()));
-                    sbCode.AppendFormat("\t\t[ColumnAttribute(Name = \"{0}\", IsPrimaryKey = {1}, AutoIncrement = {2}, DataType = DataType.{3}, CanNull = {4})]\n", reader["ColName"].ToString(), reader["IsPK"].ToString(), reader["IsAuto"].ToString(), GetDataType(reader["ColTypeName"].ToString()), reader["AllowNull"].ToString());
-                    sbCode.AppendFormat("\t\tpublic {0} {1}\n", GetType(reader["ColTypeName"].ToString()), reader["ColName"].ToString().FirstToUpper(reader["ColName"].ToString()));
+                    sbCode.AppendFormat("\t\t[DataMapping(ColumnName = \"{0}\", DbType = DbType.{1}, Length = {2}, CanNull = {3}, DefaultValue = {4}, PrimaryKey = {5}, AutoIncrement = {6}, IsMap = {7})]\n", 
+                        reader["ColName"].ToString(), GetDataType(reader["ColTypeName"].ToString()), reader["length"].ToString(),
+                        reader["AllowNull"].ToString(), "null", reader["IsPK"].ToString(), reader["IsAuto"].ToString(), "true");
+                    sbCode.AppendFormat("\t\tpublic {0} {1} {{ get; set; }}\n", GetType(reader["ColTypeName"].ToString()), reader["ColName"].ToString().FirstToUpper(reader["ColName"].ToString()));
+                    sbCode.Append("\n");
+
+                    sbCode.AppendFormat("\t\tpublic {0}Entity Include{1}(bool flag)\n", tbClassName.Text, reader["ColName"].ToString().FirstToUpper(reader["ColName"].ToString()));
                     sbCode.Append("\t\t{\n");
-                    sbCode.Append("\t\t\tget { return " + "".FirstToLower(reader["ColName"].ToString()) + "; }\n");
-                    sbCode.Append("\t\t\tset { " + "".FirstToLower(reader["ColName"].ToString()) + " = value; }\n");
-                    sbCode.Append("\t\t}\n\n");
+                    sbCode.AppendFormat("\t\t\tif (flag && !this.ColumnList.Contains(\"{0}\"))\n", reader["ColName"].ToString().FirstToUpper(reader["ColName"].ToString()));
+                    sbCode.Append("\t\t\t{\n");
+                    sbCode.AppendFormat("\t\t\t\tthis.ColumnList.Add(\"{0}\");\n", reader["ColName"].ToString().FirstToUpper(reader["ColName"].ToString()));
+                    sbCode.Append("\t\t\t}\n");
+                    sbCode.Append("\t\t\treturn this;\n");
+                    sbCode.Append("\t\t}\n");
+
+                    sbCode.Append("\n");
                 }
                 sbCode.Append("\t}\n");
+
+                sbCode.Append("\n");
+                sbCode.Append("\n");
+
+                sbCode.AppendFormat("\tpublic partial class {0}Entity\n", tbClassName.Text);
+                sbCode.Append("\t{\n");
+                sbCode.Append("\t}\n");
+
                 sbCode.Append("}\n");
+
                 sbCode.Replace("@PrimaryKeyName", pkName);
                 rtxtCode.Text = sbCode.ToString();
             }
-            catch
+            catch(Exception ex)
             {
                 MessageBox.Show("连接失败");
             }
@@ -208,6 +232,16 @@ namespace CodeCreate
                 }
             }
             GetTable();
+        }
+
+        private void PrintAnnotation(ref StringBuilder sbCode)
+        {
+            sbCode.AppendFormat(@"/*******************************************************************************
+* Copyright (C) Git Corporation. All rights reserved.
+*
+* Author: 代码工具自动生成
+* Create Date: {0}
+*********************************************************************************/", DateTime.Now.ToString("yyyyMMdd"));
         }
 
 
@@ -269,46 +303,49 @@ namespace CodeCreate
             switch (name.ToLower())
             {
                 case "int":
-                    value = DataType.Int.ToString();
+                    value = DbType.Int32.ToString();
                     break;
                 case "bigint":
-                    value = DataType.Bigint.ToString();
+                    value = DbType.Int64.ToString();
                     break;
                 case "bit":
-                    value = DataType.Bit.ToString();
+                    value = DbType.Byte.ToString();
                     break;
                 case "char":
-                    value = DataType.Char.ToString();
+                    value = DbType.String.ToString();
                     break;
                 case "date":
-                    value = DataType.Datetime.ToString();
+                    value = DbType.DateTime.ToString();
                     break;
                 case "datetime":
-                    value = DataType.Datetime.ToString();
+                    value = DbType.DateTime.ToString();
                     break;
                 case "datetime2":
-                    value = DataType.Datetime.ToString();
+                    value = DbType.DateTime.ToString();
                     break;
                 case "float":
-                    value = DataType.Float.ToString();
+                    value = DbType.Double.ToString();
+                    break;
+                case "decimal":
+                    value = DbType.Decimal.ToString();
                     break;
                 case "money":
-                    value = DataType.Money.ToString();
+                    value = DbType.Currency.ToString();
                     break;
                 case "nchar":
-                    value = DataType.Nchar.ToString();
+                    value = DbType.String.ToString();
                     break;
                 case "ntext":
-                    value = DataType.Ntext.ToString();
+                    value = DbType.String.ToString();
                     break;
                 case "nvarchar":
-                    value = DataType.Nvarchar.ToString();
+                    value = DbType.String.ToString();
                     break;
                 case "varchar":
-                    value = DataType.Varchar.ToString();
+                    value = DbType.String.ToString();
                     break;
                 case "text":
-                    value = DataType.Text.ToString();
+                    value = DbType.String.ToString();
                     break;
             }
             return value;
@@ -325,5 +362,102 @@ namespace CodeCreate
 
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //路径设置
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                tbFilePath.Text = fbd.SelectedPath + "\\";
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string tableName = ddlTableNames.Text;
+            string pathName = tableName.IndexOf("_") > 0 ? tableName.Split('_')[1] : tableName;
+
+            //创建对应的HTML目录
+            if (!Directory.Exists(tbFilePath.Text + pathName))
+            {
+                Directory.CreateDirectory(tbFilePath.Text + pathName);
+            }
+
+            //导出Index
+            //using (FileStream aFile = new FileStream(tbFilePath.Text + pathName + "\\Index.cshtml", FileMode.OpenOrCreate))
+            //{
+            //    using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //    {
+            //        sw.WriteLine(txt_Index.Text);
+            //    }
+            //}
+            //导出Create
+            //using (FileStream aFile = new FileStream(txtfilepath.Text + pathName + "\\Create.cshtml", FileMode.OpenOrCreate))
+            //{
+            //    using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //    {
+            //        sw.WriteLine(txt_Create.Text);
+            //    }
+            //}
+            //导出Edit
+            //using (FileStream aFile = new FileStream(txtfilepath.Text + pathName + "\\Edit.cshtml", FileMode.OpenOrCreate))
+            //{
+            //    using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //    {
+            //        sw.WriteLine(txt_Edit.Text);
+            //    }
+            //}
+            //if (cb_EnableParent.Checked && cb_MulView.Checked)
+            //{
+            //    //导出CreateParent
+            //    using (FileStream aFile = new FileStream(txtfilepath.Text + pathName + "\\CreateParent.cshtml", FileMode.OpenOrCreate))
+            //    {
+            //        using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //        {
+            //            sw.WriteLine(txt_CreateParent.Text);
+            //        }
+            //    }
+            //    //导出EditParent
+            //    using (FileStream aFile = new FileStream(txtfilepath.Text + pathName + "\\EditParent.cshtml", FileMode.OpenOrCreate))
+            //    {
+            //        using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //        {
+            //            sw.WriteLine(txt_EditParent.Text);
+            //        }
+            //    }
+            //}
+            //导出BLL
+            //using (FileStream aFile = new FileStream(txtfilepath.Text + "\\" + tableName + "BLL.cs", FileMode.OpenOrCreate))
+            //{
+            //    using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //    {
+            //        sw.WriteLine(txt_PartialBLL.Text);
+            //    }
+            //}
+            //导出Model
+            using (FileStream aFile = new FileStream(tbFilePath.Text + "\\" + tbClassName.Text + "Entity.cs", FileMode.OpenOrCreate))
+            {
+                using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+                {
+                    sw.WriteLine(rtxtCode.Text);
+                }
+            }
+            //导出Controller
+            //using (FileStream aFile = new FileStream(txtfilepath.Text + pathName + "Controller.cs", FileMode.OpenOrCreate))
+            //{
+            //    using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+            //    {
+            //        sw.WriteLine(txt_Controller.Text);
+            //    }
+            //}
+
+            string path = tbFilePath.Text.Replace("\\\\", "\\");
+            System.Diagnostics.Process.Start("explorer.exe", path);
+        }
+
+        private void ddlTableNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tbClassName.Text = ddlTableNames.Text.FirstToUpper(ddlTableNames.Text);
+        }
     }
 }
