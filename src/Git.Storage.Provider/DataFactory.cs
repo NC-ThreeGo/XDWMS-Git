@@ -40,6 +40,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Git.Storage.IDataAccess.WMS;
+using Git.Storage.DataAccess.WMS;
 
 namespace Git.Storage.Provider
 {
@@ -188,5 +190,10 @@ namespace Git.Storage.Provider
         public IReports Reports { get { return new ReportsDataAccess(); } }
 
         public IReportParams ReportParams { get { return new ReportParamsDataAccess(); } }
+
+
+
+        /************************************ WMS 命名空间 *************************************/
+        public IPart Part { get { return new PartDataAccess(); } }
     }
 }

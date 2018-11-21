@@ -115,7 +115,9 @@
     <Compile Include="Store\StorageProvider.cs" />
     <Compile Include="TNumProivder.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="WMS\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Git.Storage.Common\Git.Storage.Common.csproj">
       <Project>{7061be81-6a7b-4773-8bef-fad51a88d522}</Project>

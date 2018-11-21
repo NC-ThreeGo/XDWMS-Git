@@ -129,6 +129,7 @@
     <Compile Include="Store\ProductDataAccess.cs" />
     <Compile Include="Store\StorageDataAccess.cs" />
     <Compile Include="Store\SupplierDataAccess.cs" />
+    <Compile Include="WMS\PartDataAccess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Git.Storage.Common\Git.Storage.Common.csproj">

@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -247,6 +250,9 @@
     <Compile Include="Areas\Storage\Controllers\StoreAjaxController.cs" />
     <Compile Include="Areas\Storage\Controllers\StoreController.cs" />
     <Compile Include="Areas\Storage\StorageAreaRegistration.cs" />
+    <Compile Include="Areas\WMS\Controllers\PartAjaxController.cs" />
+    <Compile Include="Areas\WMS\Controllers\PartController.cs" />
+    <Compile Include="Areas\WMS\WMSAreaRegistration.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\DepartAjaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -297,7 +303,7 @@
     <Content Include="Theme\customer\jquery.jUploader-1.01.min.js" />
     <Content Include="Theme\customer\Move\Git.Storage.MoveOrder.js" />
     <Content Include="Theme\customer\OutStorage\Git.Storage.ProductOutOrder.js" />
-    <Content Include="Theme\customer\Product\Git.Storage.Goods.js" />
+    <Content Include="Theme\customer\Product\Git.WMS.Base.Part.js" />
     <Content Include="Theme\customer\Report\Git.Storage.BadReport.js" />
     <Content Include="Theme\customer\Report\Git.Storage.CustomerReport.js" />
     <Content Include="Theme\customer\Report\Git.Storage.InStorageReport.js" />
@@ -308,6 +314,7 @@
     <Content Include="Theme\customer\Report\Git.Storage.SupplierReport.js" />
     <Content Include="Theme\customer\Storage\Git.Storage.LocalProduct.js" />
     <Content Include="Theme\customer\Storage\Git.Storage.Measure.js" />
+    <Content Include="Theme\customer\WMS\Git.WMS.Base.Part.js" />
     <Content Include="Theme\img\PDA.jpg" />
     <Content Include="Theme\plugins\amline\amcharts_key.txt" />
     <Content Include="Theme\plugins\amline\amline.html" />
@@ -1742,6 +1749,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Report\Views\Shared\" />
+    <Folder Include="Areas\WMS\Views\Shared\" />
     <Folder Include="Theme\plugins\jquery-file-upload\server\php\files\thumbnail\" />
   </ItemGroup>
   <ItemGroup>
@@ -2008,6 +2016,8 @@
     <Content Include="Areas\Report\Views\Manager\Designer.cshtml" />
     <Content Include="Areas\Report\Views\Manager\Show.cshtml" />
     <Content Include="Areas\Report\Views\Manager\AddParam.cshtml" />
+    <Content Include="Areas\WMS\Views\Web.config" />
+    <Content Include="Areas\WMS\Views\Part\Index.cshtml" />
     <None Include="Configs\Data\Database.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2040,7 +2050,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Configs\Message\Message.config" />
-    <Content Include="Configs\Pages\PagesManage.config" />
+    <Content Include="Configs\Pages\PagesManage.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Configs\SEO\SEO.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2086,7 +2098,9 @@
     <Content Include="Views\Home\AddDepart.cshtml" />
     <Content Include="Views\Res\Power.cshtml" />
     <Content Include="Views\Res\SysLog.cshtml" />
-    <Content Include="Configs\Pages\Product-PagesManage.config" />
+    <Content Include="Configs\Pages\Product-PagesManage.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Configs\Pages\InStorage-PagesManage.config" />
     <Content Include="Views\Home\AccountSetting.cshtml" />
     <Content Include="Views\Home\ChangePwd.cshtml" />
@@ -2108,6 +2122,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Configs\Pages\Report-PagesManage.config" />
+    <Content Include="Configs\Pages\WMS-PagesManage.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\WebSite.pubxml" />
     <Content Include="Views\Home\Welcome.cshtml" />
     <Content Include="Theme\plugins\Flexigrid\css\flexigrid.less" />

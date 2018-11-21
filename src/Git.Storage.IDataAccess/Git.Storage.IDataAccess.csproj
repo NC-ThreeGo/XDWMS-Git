@@ -99,6 +99,7 @@
     <Compile Include="Store\IProductCategory.cs" />
     <Compile Include="Store\IStorage.cs" />
     <Compile Include="Store\ISupplier.cs" />
+    <Compile Include="WMS\IPart.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Git.Storage.Entity\Git.Storage.Entity.csproj">
