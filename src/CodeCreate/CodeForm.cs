@@ -219,6 +219,10 @@ namespace CodeCreate
 
                 sbCode.Replace("@PrimaryKeyName", pkName);
                 rtxtCode.Text = sbCode.ToString();
+
+                PrintIDataAccess();
+                PrintDataAccess();
+                PrintDataFactory();
             }
             catch(Exception ex)
             {
@@ -244,6 +248,153 @@ namespace CodeCreate
 *********************************************************************************/", DateTime.Now.ToString("yyyyMMdd"));
         }
 
+
+        private void PrintIDataAccess()
+        {
+            StringBuilder sbCode = new StringBuilder("");
+
+            PrintAnnotation(ref sbCode);
+            sbCode.Append("\n");
+
+            sbCode.Append("using System;\n");
+            sbCode.Append("using System.Collections.Generic;\n");
+            sbCode.Append("using System.Linq;\n");
+            sbCode.Append("using System.Text;\n");
+            sbCode.Append("using System.Data;\n");
+            sbCode.Append("using Git.Framework.ORM;\n");
+            sbCode.AppendFormat("using Git.Storage.Entity.{0};\n", tbModuleName.Text);
+            sbCode.Append("\n");
+            sbCode.AppendFormat("namespace Git.Storage.IDataAccess.{0}\n", tbModuleName.Text);
+            sbCode.Append("{\n");
+
+            sbCode.AppendFormat("\tpublic partial interface I{0} : IDbHelper<{0}Entity>\n", tbClassName.Text);
+            sbCode.Append("\t{\n");
+            sbCode.Append("\t}\n");
+            sbCode.Append("}");
+
+            rtbIDataAccess.Text = sbCode.ToString();
+        }
+
+        private void PrintDataAccess()
+        {
+            StringBuilder sbCode = new StringBuilder("");
+
+            PrintAnnotation(ref sbCode);
+            sbCode.Append("\n");
+
+            sbCode.Append("using System;\n");
+            sbCode.Append("using System.Collections.Generic;\n");
+            sbCode.Append("using System.Linq;\n");
+            sbCode.Append("using System.Text;\n");
+            sbCode.Append("using System.Data;\n");
+            sbCode.Append("using Git.Framework.ORM;\n");
+            sbCode.Append("using Git.Framework.MsSql;\n");
+            sbCode.AppendFormat("using Git.Storage.Entity.{0};\n", tbModuleName.Text);
+            sbCode.AppendFormat("using Git.Storage.IDataAccess.{0};\n", tbModuleName.Text);
+            sbCode.Append("\n");
+            sbCode.AppendFormat("namespace Git.Storage.DataAccess.{0}\n", tbModuleName.Text);
+            sbCode.Append("{\n");
+
+            sbCode.AppendFormat("\tpublic partial class {0}DataAccess : DbHelper<{0}Entity>, I{0}\n", tbClassName.Text);
+            sbCode.Append("\t{\n");
+            sbCode.Append("\t}\n");
+            sbCode.Append("}");
+
+            rtbDataAccess.Text = sbCode.ToString();
+        }
+
+        private void PrintProvider()
+        {
+            StringBuilder sbCode = new StringBuilder("");
+
+            PrintAnnotation(ref sbCode);
+            sbCode.Append("\n");
+
+            sbCode.Append("using System;\n");
+            sbCode.Append("using System.Collections.Generic;\n");
+            sbCode.Append("using System.Linq;\n");
+            sbCode.Append("using System.Text;\n");
+            sbCode.Append("using System.Data;\n");
+            sbCode.Append("using System.Transactions;\n");
+            sbCode.Append("using Git.Framework.Log;\n");
+            sbCode.Append("using Git.Framework.DataTypes;\n");
+            sbCode.Append("using Git.Framework.DataTypes.ExtensionMethods;\n");
+            sbCode.Append("using Git.Framework.ORM;\n");
+            sbCode.Append("using Git.Framework.Cache;\n");
+            sbCode.Append("using Git.Storage.Common;;\n");
+            sbCode.AppendFormat("using Git.Storage.Entity.{0};\n", tbModuleName.Text);
+            sbCode.Append("\n");
+            sbCode.AppendFormat("namespace Git.Storage.Provider.{0}\n", tbModuleName.Text);
+            sbCode.Append("{\n");
+
+            sbCode.AppendFormat("\tpublic partial class {0}Provider : DataFactory\n", tbClassName.Text);
+            sbCode.Append("\t{\n");
+            sbCode.AppendFormat("\t\tprivate Log log = Log.Instance(typeof({0}Provider));\n", tbClassName.Text);
+            sbCode.AppendFormat("\t\tpublic {0}Provider() {{ }}\n", tbClassName.Text);
+
+            sbCode.Append("\t\t/// <summary>\n");
+            sbCode.Append("\t\t/// 清除缓存\n");
+            sbCode.Append("\t\t/// </summary>\n");
+            sbCode.Append("\t\t/// <returns></returns>\n");
+            sbCode.Append("\t\tpublic int Clear()\n");
+            sbCode.Append("\t\t{\n");
+            sbCode.AppendFormat("\t\t\tCacheHelper.Remove(CacheKey.{0}_{1}_CACHE);\n", tbModuleName.Text, tbClassName.Text);
+            sbCode.Append("\t\t\treturn 0;\n");
+            sbCode.Append("\t\t}\n");
+
+            sbCode.AppendFormat("\t\tpublic int Add({0}Entity entity)\n", tbClassName.Text);
+            sbCode.Append("\t\t{\n");
+            sbCode.Append("\t\t\tentity.IncludeAll();\n");
+            sbCode.AppendFormat("\t\t\tint line = this.{0}.Add(entity);\n", tbClassName.Text);
+            sbCode.Append("\t\t\tif (line > 0)\n");
+            sbCode.Append("\t\t\t{\n");
+            sbCode.Append("\t\t\t\tClear();\n");
+            sbCode.Append("\t\t\t}\n");
+            sbCode.Append("\t\t\treturn line;\n");
+            sbCode.Append("\t\t}\n");
+
+            sbCode.AppendFormat("\t\tpublic int Update({0}Entity entity)\n", tbClassName.Text);
+            sbCode.Append("\t\t{\n");
+            sbCode.Append("\t\t\tentity.IncludeAll();\n");
+            sbCode.AppendFormat("\t\t\tint line = this.{0}.Update(entity);\n", tbClassName.Text);
+            sbCode.Append("\t\t\tif (line > 0)\n");
+            sbCode.Append("\t\t\t{\n");
+            sbCode.Append("\t\t\t\tClear();\n");
+            sbCode.Append("\t\t\t}\n");
+            sbCode.Append("\t\t\treturn line;\n");
+            sbCode.Append("\t\t}\n");
+
+            sbCode.AppendFormat("\t\tpublic int Delete(string {0}Code)\n", tbClassName.Text.FirstToLower(tbClassName.Text));
+            sbCode.Append("\t\t{\n");
+            sbCode.AppendFormat("\t\t\tint line = this.{0}.Delete(entity);\n", tbClassName.Text);
+            sbCode.Append("\t\t\tif (line > 0)\n");
+            sbCode.Append("\t\t\t{\n");
+            sbCode.Append("\t\t\t\tClear();\n");
+            sbCode.Append("\t\t\t}\n");
+            sbCode.Append("\t\t\treturn line;\n");
+            sbCode.Append("\t\t}\n");
+
+            sbCode.Append("\t}\n");
+            sbCode.Append("}");
+
+            rtbNewCode.Text = sbCode.ToString();
+        }
+
+        private void PrintDataFactory()
+        {
+            StringBuilder sbCode = new StringBuilder("");
+            sbCode.Append("DataFactory:\n");
+            sbCode.AppendFormat("public I{0} {0} {{ get {{ return new {0}DataAccess(); }} }}\n", tbClassName.Text);
+            sbCode.Append("\n");
+            sbCode.Append("\n");
+
+            sbCode.Append("CacheKey:\n");
+            sbCode.AppendFormat("public static string {0}_{1}_CACHE = \"0}_{1}_CACHE\";\n", tbModuleName.Text, tbClassName.Text);
+            sbCode.Append("\n");
+            sbCode.Append("\n");
+
+            rtbProvider.Text = sbCode.ToString();
+        }
 
         private string GetType(string name)
         {
@@ -426,14 +577,22 @@ namespace CodeCreate
             //        }
             //    }
             //}
-            //导出BLL
-            //using (FileStream aFile = new FileStream(txtfilepath.Text + "\\" + tableName + "BLL.cs", FileMode.OpenOrCreate))
-            //{
-            //    using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
-            //    {
-            //        sw.WriteLine(txt_PartialBLL.Text);
-            //    }
-            //}
+            //导出IDataAccess
+            using (FileStream aFile = new FileStream(tbFilePath.Text + "\\I" + tbClassName.Text + ".cs", FileMode.OpenOrCreate))
+            {
+                using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+                {
+                    sw.WriteLine(rtbIDataAccess.Text);
+                }
+            }
+            //导出DataAccess
+            using (FileStream aFile = new FileStream(tbFilePath.Text + "\\" + tbClassName.Text + "DataAccess.cs", FileMode.OpenOrCreate))
+            {
+                using (StreamWriter sw = new StreamWriter(aFile, Encoding.UTF8))
+                {
+                    sw.WriteLine(rtbDataAccess.Text);
+                }
+            }
             //导出Model
             using (FileStream aFile = new FileStream(tbFilePath.Text + "\\" + tbClassName.Text + "Entity.cs", FileMode.OpenOrCreate))
             {

@@ -52,6 +52,12 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.rtxtCode = new System.Windows.Forms.RichTextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.rtbIDataAccess = new System.Windows.Forms.RichTextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.rtbDataAccess = new System.Windows.Forms.RichTextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.rtbNewCode = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tbModuleName = new System.Windows.Forms.TextBox();
             this.tbFilePath = new System.Windows.Forms.TextBox();
@@ -60,10 +66,16 @@
             this.button2 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.tbClassName = new System.Windows.Forms.TextBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.rtbProvider = new System.Windows.Forms.RichTextBox();
             this.gbLogin.SuspendLayout();
             this.gbDataBase.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblServerName
@@ -306,6 +318,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage5);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Location = new System.Drawing.Point(568, 160);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -332,6 +348,66 @@
             this.rtxtCode.Size = new System.Drawing.Size(1466, 603);
             this.rtxtCode.TabIndex = 9;
             this.rtxtCode.Text = "";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.rtbIDataAccess);
+            this.tabPage2.Location = new System.Drawing.Point(8, 39);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(1472, 609);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "IDataAccess";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // rtbIDataAccess
+            // 
+            this.rtbIDataAccess.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbIDataAccess.Location = new System.Drawing.Point(0, 0);
+            this.rtbIDataAccess.Margin = new System.Windows.Forms.Padding(6);
+            this.rtbIDataAccess.Name = "rtbIDataAccess";
+            this.rtbIDataAccess.Size = new System.Drawing.Size(1472, 609);
+            this.rtbIDataAccess.TabIndex = 10;
+            this.rtbIDataAccess.Text = "";
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.rtbDataAccess);
+            this.tabPage3.Location = new System.Drawing.Point(8, 39);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1472, 609);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "DataAccess";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // rtbDataAccess
+            // 
+            this.rtbDataAccess.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbDataAccess.Location = new System.Drawing.Point(0, 0);
+            this.rtbDataAccess.Margin = new System.Windows.Forms.Padding(6);
+            this.rtbDataAccess.Name = "rtbDataAccess";
+            this.rtbDataAccess.Size = new System.Drawing.Size(1472, 609);
+            this.rtbDataAccess.TabIndex = 10;
+            this.rtbDataAccess.Text = "";
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.rtbNewCode);
+            this.tabPage4.Location = new System.Drawing.Point(8, 39);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1472, 609);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "增加的代码行";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // rtbNewCode
+            // 
+            this.rtbNewCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbNewCode.Location = new System.Drawing.Point(0, 0);
+            this.rtbNewCode.Margin = new System.Windows.Forms.Padding(6);
+            this.rtbNewCode.Name = "rtbNewCode";
+            this.rtbNewCode.Size = new System.Drawing.Size(1472, 609);
+            this.rtbNewCode.TabIndex = 11;
+            this.rtbNewCode.Text = "";
             // 
             // label1
             // 
@@ -413,6 +489,26 @@
             this.tbClassName.Size = new System.Drawing.Size(272, 35);
             this.tbClassName.TabIndex = 12;
             // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.rtbProvider);
+            this.tabPage5.Location = new System.Drawing.Point(8, 39);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(1472, 609);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Provider";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // rtbProvider
+            // 
+            this.rtbProvider.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbProvider.Location = new System.Drawing.Point(0, 0);
+            this.rtbProvider.Margin = new System.Windows.Forms.Padding(6);
+            this.rtbProvider.Name = "rtbProvider";
+            this.rtbProvider.Size = new System.Drawing.Size(1472, 609);
+            this.rtbProvider.TabIndex = 11;
+            this.rtbProvider.Text = "";
+            // 
             // CodeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
@@ -447,6 +543,10 @@
             this.gbDataBase.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -486,5 +586,13 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbClassName;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.RichTextBox rtbIDataAccess;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.RichTextBox rtbDataAccess;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.RichTextBox rtbNewCode;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.RichTextBox rtbProvider;
     }
 }
